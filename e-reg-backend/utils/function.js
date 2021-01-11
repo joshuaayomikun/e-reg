@@ -150,7 +150,7 @@ exports.genericReturn = ({
   }
 };
 
-exports.updateTemUserEmailVerification = async({username, code}) => {
+exports.updateTempUserEmailVerification = async({username, code}) => {
   try{
     const user = await tempAccount.findOneAndUpdate({username, "emailConfirmation.confirmed": code}, {"emailConfirmation.confirmed": true}, {new:true})
     if(user) {
@@ -162,10 +162,25 @@ exports.updateTemUserEmailVerification = async({username, code}) => {
   return false
 }
 
-exports.updateTemUserPhoneVerification = async({username, code}) => {
+exports.updateTempUserPhoneVerification = async({username, code}) => {
   try {
     const user = await tempAccount.findOneAndUpdate({username, "emailConfirmation.confirmed":true, "phoneConfirmation.code":code}, {"phoneConfirmation.code": true}, {new:true})
     if(user) {
+      return true
+    }
+  } catch (ex) {
+    
+  }
+  return false
+}
+
+exports.updatePassword = async({username, password}) => {
+  try {
+    const tempUser = await tempAccount.findOneAndUpdate({username, "phoneConfirmation.confirmed":true}, {password}, {new:true})
+    
+    if(tempUser) {
+      const newUser = new user(tempUser)
+      await newUser.save()
       return true
     }
   } catch (ex) {

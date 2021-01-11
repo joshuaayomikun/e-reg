@@ -1,13 +1,13 @@
 const express = require("express");
 const {check} = require("express-validator");
 const router = express.Router();
-const {firstPageSignup, checkEmail, checkUsername } = require("../controllers/accountController");
+const {firstPageSignup, checkEmail, checkUsername, verifyUserbyEmail } = require("../controllers/accountController");
 
 router.post("/sigup/1", [
-    check("Username", "Please enter your first name").not().isEmpty(),
-    check("Name", "Please enter your first name").not().isEmpty(),
-    check("Email", "Please enter a valid email address").not().isEmpty(),
-    check("PhoneNumber", "Please enter a PhoneNumber").not().isEmpty()
+    check("username", "Please enter your first name").not().isEmpty(),
+    check("name", "Please enter your first name").not().isEmpty(),
+    check("emailAddress", "Please enter a valid email address").not().isEmpty(),
+    check("phoneNumber", "Please enter a PhoneNumber").not().isEmpty()
 ], firstPageSignup);
 
 router.get("/checkEmail/:email", checkEmail)
@@ -15,8 +15,12 @@ router.get("/checkEmail/:email", checkEmail)
 router.get("/checkusername/:username", checkUsername)
 
 router.put("/signup/2/:username", [
-    check("emailDigit",  "The Code is empty").notEmpty()
-])
+    check("code",  "The Code is empty").notEmpty()
+], verifyUserbyEmail)
+
+router.put("/signup/3/:username", [
+    check("code",  "The Code is empty").notEmpty()
+], verifyUserbyPhone)
 
 
 

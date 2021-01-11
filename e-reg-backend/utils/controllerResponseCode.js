@@ -2,10 +2,28 @@ exports.statusCodeConstant = {
     controllers: {
         account: {
             methods: {
+                addPassword: {
+                    statusCodes:{
+                        ok: this.genericSuccessResponse,
+                        updateFailed: {
+                            ...this.genericErrorResponse,
+                            message: "cannot add password"
+                        }
+                    }
+                },
+                verifyUserbyPhone:{
+                    statusCodes:{
+                        ok: this.genericSuccessResponse,
+                        cannotVerify:{
+                            ...this.genericErrorResponse,
+                            message: "Cannot update",
+                        }
+                    }
+                },
                 verifyUserbyEmail:{
                     statusCodes:{
                         ok: this.genericSuccessResponse,
-                        cannotUpdate:{
+                        cannotVerify:{
                             ...this.genericErrorResponse,
                             message: "Cannot update",
                         }

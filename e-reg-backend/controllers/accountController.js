@@ -6,7 +6,9 @@ const {
           firstPageSignup, 
           emailNotExists, 
           usernameNotExists,
-          verifyUserbyEmail
+          verifyUserbyEmail,
+          verifyUserbyPhone,
+          addPassword
         },
       },
     },
@@ -18,7 +20,8 @@ const {
   genericReturn,
   userExists,
   createTempUser,
-  updateTemUserEmailVerification,
+  updateTempUserEmailVerification,
+  updatePassword,
 } = require("../utils/function");
 
 // first stage of temp signup
@@ -83,15 +86,52 @@ exports.verifyUserbyEmail = async(req, res) => {
   try{
     const {username} = req.params
     const {code} = req.body
-    const user = updateTemUserEmailVerification({username, code})
+    const user = updateTempUserEmailVerification({username, code})
     return genericReturn({
       successResponse: verifyUserbyEmail.statusCodes.ok,
-      failedResponse: verifyUserbyEmail.statusCodes.cannotUpdate,
+      failedResponse: verifyUserbyEmail.statusCodes.cannotVerify,
       Parameter: user,
       res
     })
 
   } catch(ex) {
+    return res.status(400).json({
+      error: decipherEx(ex),
+    });
+  }
+}
+
+exports.verifyUserbyPhone = async(req, res) => {
+  try{
+    const {username} = req.params
+    const {code} = req.body
+    const user = updateTempUserPhoneVerification({username, code})
+    return genericReturn({
+      successResponse: verifyUserbyPhone.statusCodes.ok,
+      failedResponse: verifyUserbyPhone.statusCodes.cannotVerify,
+      Parameter: user,
+      res
+    })
+
+  } catch(ex) {
+    return res.status(400).json({
+      error: decipherEx(ex),
+    });
+  }
+}
+
+exports.addPassword = async(res, req) => {
+  try {
+    const {username} = req.params
+    const {password} = req.body
+    return genericReturn({
+      successResponse: addPassword.statusCodes.ok,
+      failedResponse: addPassword.statusCodes.updateFailed,
+      Parameter: updatePassword({username, password}),
+      res
+    })
+    
+  } catch (ex) {
     return res.status(400).json({
       error: decipherEx(ex),
     });

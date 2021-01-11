@@ -2,7 +2,7 @@ const mongoose =  require("mongoose");
 const name = require("./name");
 
 const tempAccountSchema = new mongoose.Schema({
-    usename:{
+    username:{
         type: String,
         required: true,
     },
@@ -27,7 +27,6 @@ const tempAccountSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         }
-
     },
     phoneConfirmation: {
         Code: {
@@ -37,6 +36,9 @@ const tempAccountSchema = new mongoose.Schema({
             type:Boolean,
             default: false
         }
+    },
+    password: {
+        type: String
     }
 })
 
