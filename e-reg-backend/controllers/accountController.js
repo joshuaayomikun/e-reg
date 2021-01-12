@@ -23,6 +23,7 @@ const {
   updateTempUserEmailVerification,
   updatePassword,
 } = require("../utils/function");
+const bcrypt = require("bcryptjs")
 
 // first stage of temp signup
 exports.firstPageSignup = async (req, res) => {
@@ -124,10 +125,13 @@ exports.addPassword = async(res, req) => {
   try {
     const {username} = req.params
     const {password} = req.body
+    
+    const salt = await bcrypt.genSalt(10);
+
     return genericReturn({
       successResponse: addPassword.statusCodes.ok,
       failedResponse: addPassword.statusCodes.updateFailed,
-      Parameter: updatePassword({username, password}),
+      Parameter: updatePassword({username, password: await bcrypt.hash(password, salt)}),
       res
     })
     

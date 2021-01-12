@@ -1,5 +1,21 @@
 exports.statusCodeConstant = {
     controllers: {
+        profile:{
+            methods: {
+                getAllProfiles:{
+                    statusCodes:{
+                        ok:this.genericSuccessResponse,
+                        cannotGet:this.genericErrorResponse
+                    }
+                },
+                getProfileByUserId: {
+                    statusCodes: {
+                        ok:this.genericSuccessResponse,
+                        cannotGet: this.genericErrorResponse
+                    }
+                }
+            }
+        },
         account: {
             methods: {
                 addPassword: {

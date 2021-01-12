@@ -1,3 +1,5 @@
+require('dotenv').config();
+const environment = process.env;
 const { default: axios } = require("axios");
 const tempAccount = require("../models/tempAccount");
 const user = require("../models/user");
@@ -82,7 +84,7 @@ exports.createTempUser = async ({
 
     (async function (data) {
       try {
-        const response = await axios.post(process.env.LOGIC_APP_URL, jsonData);
+        const response = await axios.post(environment.LOGIC_APP_URL, jsonData);
         console.log(response.status);
       } catch (error) {
         console.log(error);
@@ -154,6 +156,20 @@ exports.updateTempUserEmailVerification = async({username, code}) => {
   try{
     const user = await tempAccount.findOneAndUpdate({username, "emailConfirmation.confirmed": code}, {"emailConfirmation.confirmed": true}, {new:true})
     if(user) {
+      var jsonData = {
+        number: phoneNumber,
+        message: `Your code is ${code}`,
+        token: environment.API_TOKEN_FOR_SMS,
+      };
+  
+      (async function (data) {
+        try {
+          const response = await axios.post(environment.BULK_SMS_ENDPOINT, jsonData);
+          console.log(response.status);
+        } catch (error) {
+          console.log(error);
+        }
+      })(jsonData);
       return true
     }
   } catch(ex) {
@@ -181,10 +197,29 @@ exports.updatePassword = async({username, password}) => {
     if(tempUser) {
       const newUser = new user(tempUser)
       await newUser.save()
+      await tempAccount.deleteOne({username})
       return true
     }
   } catch (ex) {
     
   }
   return false
+}
+
+exports.getProfileFromUserId = (userId) =>{
+  try {
+    const profile = user.findById(userId)
+    return profile
+  } catch (ex) {
+    
+  }
+}
+
+exports.getAllUser = () => {
+  try {
+    const users = user.find({})
+    return users
+  } catch (ex) {
+    
+  }
 }
